@@ -1,4 +1,4 @@
-package com.playground.android.weatherforecast.Networking;
+package com.playground.android.weatherforecast.networking;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

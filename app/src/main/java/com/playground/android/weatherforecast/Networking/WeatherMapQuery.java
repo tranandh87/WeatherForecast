@@ -1,4 +1,4 @@
-package com.playground.android.weatherforecast.Networking;
+package com.playground.android.weatherforecast.networking;
 
 import android.location.Location;
 import android.net.Uri;
@@ -54,7 +54,7 @@ public class WeatherMapQuery {
 
     private static String buildSearchQuery(Builder builder,String query){
         return builder
-                .appendQueryParameter("q",query)
+                .appendQueryParameter("q", query)
                 .build().toString();
     }
 

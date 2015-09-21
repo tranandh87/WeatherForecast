@@ -25,7 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.playground.android.weatherforecast.Networking.WeatherMapFetcher;
+import com.playground.android.weatherforecast.networking.WeatherMapFetcher;
 import com.playground.android.weatherforecast.R;
 import com.playground.android.weatherforecast.bean.WeatherForecastReport;
 import com.playground.android.weatherforecast.bean.CurrentWeatherReport;
@@ -75,8 +75,13 @@ public class WeatherForecastFragment extends Fragment {
                     @Override
                     public void onConnected(Bundle bundle) {
                         getActivity().invalidateOptionsMenu();
-                        Log.i(TAG,"find location from on start");
-                        findWeatherForCurrentLocation();
+                        Log.i(TAG, "find location from on start");
+                        if (mSearchView != null && !mSearchView.getQuery().toString().isEmpty()) {
+                            Log.i(TAG, "Query : " + mSearchView.getQuery().toString());
+                            findWeatherForSearchQuery(mSearchView.getQuery().toString());
+                        } else {
+                            findWeatherForCurrentLocation();
+                        }
                     }
 
                     @Override
@@ -331,7 +336,7 @@ public class WeatherForecastFragment extends Fragment {
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.i(TAG,"Error message dialog is captured");
+                        Log.i(TAG, "Error message dialog is captured");
                         findWeatherForCurrentLocation();
                     }
                 });
