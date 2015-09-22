@@ -1,12 +1,12 @@
 # WeatherForecast Android App
 Simple weather app for outside person
 
-Note: This app querires wetather data from openweathermap.org and the data and accuracy is dependent on the api
+Note: This app queries weather data from openweathermap.org and the data and accuracy is dependent on the api
 
 Supports API 16 and above
 
 Pre-Requirement to run this app
-1. Should be run on real device with Google Play Services enabled.
+1. Should be run on real device with Google Play Services enabled. Can also run on emulator with play services, locations and mock location data enabled.
 
 Features:
 1. Shows current location weather on launching the app
