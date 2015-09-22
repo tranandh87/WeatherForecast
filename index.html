@@ -35,11 +35,16 @@
 
 <p><strong>Supports API 16 and above</strong></p>
 
-<p><strong>Requirement to run this app:</strong>
-This app uses "Fused Location Service", a location service in Google Play services to detect the your current location. This means that <strong>only devices with the Play Store app installed</strong> and up to date will be able to use this application.
+<h3>
+<a id="requirement-to-run-this-app" class="anchor" href="#requirement-to-run-this-app" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Requirement to run this app:</strong>
+</h3>
+
+<p>This app uses "Fused Location Service", a location service in Google Play services to detect the your current location. This means that <strong>only devices with the Play Store app installed</strong> and up to date will be able to use this application.
 You can also run on emulator with play services, locations and mock location data enabled. You can find how to enabled Google Play Services and location data at the end of this page.</p>
 
-<p><strong>Features:</strong></p>
+<h3>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Features:</strong>
+</h3>
 
 <ul>
 <li>Shows current location weather on launching the app</li>
@@ -49,16 +54,22 @@ You can also run on emulator with play services, locations and mock location dat
 <li>This app shows only current location weather in landscape mode. You need to switch to portrait mode to see weather forecast and search for weather in other cities</li>
 </ul>
 
-<p><strong>Play services and location testing on emulators:</strong>
-If you are using an AVD emulator, you must first make sure that your emulator images are up to date.
+<h3>
+<a id="play-services-and-location-testing-on-emulators" class="anchor" href="#play-services-and-location-testing-on-emulators" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Play services and location testing on emulators:</strong>
+</h3>
+
+<p>If you are using an AVD emulator, you must first make sure that your emulator images are up to date.
 To do that, open up your SDK Manager (Tools → Android → SDK Manager). Go down to the version of Android you plan to use for your emulator and ensure that the Google APIs System Images are both installed and up to date. If an update is available, click the button to install the update and wait until it is ready to go before continuing.</p>
 
 <p>Your AVD emulator also needs to have a target OS version that supports the Google APIs. When you create an emulator you can identify these target OS versions because they will say “Google APIs” on the right. Choose one with an API level of 21 or higher, and you will be all set.</p>
 
 <p>If you are going to use an emulator, it is recommend to use built-in AVD emulator over a Genymotion emulator. It is possible to use either, but setting up the Genymotion emulator for this purpose is not straighforward. Explore the documentation on Genymotion's website for more information.</p>
 
-<p><strong>Mock location data:</strong>
-On an emulator you will also need some dummy (or mock) location updates to work with. Android Studio provides an Emulator Control panel that lets you send location points to the emulator. This works great on the old location services, but does nothing on the new Fused Location Provider. Instead, you have to publish mock locations programmatically.</p>
+<h3>
+<a id="mock-location-data" class="anchor" href="#mock-location-data" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Mock location data:</strong>
+</h3>
+
+<p>On an emulator you will also need some dummy (or mock) location updates to work with. Android Studio provides an Emulator Control panel that lets you send location points to the emulator. This works great on the old location services, but does nothing on the new Fused Location Provider. Instead, you have to publish mock locations programmatically.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/tranandh87">tranandh87</a></p>
