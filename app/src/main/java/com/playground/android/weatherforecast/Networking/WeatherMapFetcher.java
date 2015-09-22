@@ -181,7 +181,7 @@ public class WeatherMapFetcher {
 
                 //Setting values for weather forecast report
                 weatherForecastReport.setWeaterIcon(bitMap);
-                weatherForecastReport.setTemperature(String.valueOf(main.getTemp()));
+                weatherForecastReport.setTemperature("Max: " + String.valueOf(main.getTemp()));
                 weatherForecastReport.setDate(date);
                 weatherForecastReportList.add(weatherForecastReport);
             }

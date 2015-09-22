@@ -60,14 +60,36 @@ public class WeatherForecastFragment extends Fragment {
 
     private SearchView mSearchView;
 
+    private static final String KEY_SEARCH_QUERY = "SearchQuery";
+
     public static WeatherForecastFragment newInstance() {
         return new WeatherForecastFragment();
     }
 
+    private Bundle mSavedInstanceState;
+
+    public boolean created;
+    public boolean started;
+    public boolean viewCreated;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
+        created = true;
+
+        boolean isLandScape = getActivity().getResources().getConfiguration().orientation == 2;
+
+        if (isLandScape) {
+            setHasOptionsMenu(false);
+        }
+        else{
+            setHasOptionsMenu(true);
+        }
+
+        if (savedInstanceState != null){
+            mSavedInstanceState = savedInstanceState;
+        }
 
         mClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
@@ -75,11 +97,16 @@ public class WeatherForecastFragment extends Fragment {
                     @Override
                     public void onConnected(Bundle bundle) {
                         getActivity().invalidateOptionsMenu();
-                        Log.i(TAG, "find location from on start");
-                        if (mSearchView != null && !mSearchView.getQuery().toString().isEmpty()) {
-                            Log.i(TAG, "Query : " + mSearchView.getQuery().toString());
+
+                        if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
+                                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
+                            Log.i(TAG, "Saved Instance - Search Query From OnCreate : " + mSavedInstanceState.getString(KEY_SEARCH_QUERY));
+                            findWeatherForSearchQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY));
+                        } else if (mSearchView != null && !mSearchView.getQuery().toString().isEmpty()) {
+                            Log.i(TAG, "Search Query From OnCreate : " + mSearchView.getQuery().toString());
                             findWeatherForSearchQuery(mSearchView.getQuery().toString());
                         } else {
+                            Log.i(TAG, "Search for current location in OnCreate");
                             findWeatherForCurrentLocation();
                         }
                     }
@@ -87,10 +114,11 @@ public class WeatherForecastFragment extends Fragment {
                     @Override
                     public void onConnectionSuspended(int i) {
                         String reason = null;
-                        if (i == 1)
+                        if (i == 1) {
                             reason = " CAUSE_SERVICE_DISCONNECTED";
-                        else if (i == 2)
+                        }else if (i == 2) {
                             reason = "CAUSE_NETWORK_LOST";
+                        }
 
                         Log.e(TAG, "Connection Suspendend with reason -> " + reason);
                     }
@@ -101,6 +129,7 @@ public class WeatherForecastFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        viewCreated = true;
         View v = inflater.inflate(R.layout.fragement_weather_forecast, container, false);
 
         mWeatherForecastRecyclerView = (RecyclerView) v
@@ -121,6 +150,22 @@ public class WeatherForecastFragment extends Fragment {
         currentWeatherProgressBar =(ProgressBar) v.findViewById(R.id.current_weather_progressBar);
 
         return v;
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
+                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
+            savedInstanceState.putString(KEY_SEARCH_QUERY, mSavedInstanceState.getString(KEY_SEARCH_QUERY));
+        }
+        else{
+            if (mSearchView != null) {
+                savedInstanceState.putString(KEY_SEARCH_QUERY, mSearchView.getQuery().toString());
+            }
+        }
 
     }
 
@@ -146,6 +191,7 @@ public class WeatherForecastFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        started = true;
         getActivity().invalidateOptionsMenu();
         mClient.connect();
     }
@@ -166,6 +212,8 @@ public class WeatherForecastFragment extends Fragment {
 
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         mSearchView = (SearchView) searchItem.getActionView();
+        mSearchView.setQueryHint(getResources().getString(R.string.search));
+
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {

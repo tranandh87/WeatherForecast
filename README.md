@@ -13,4 +13,5 @@ Features:
 2. Show weather forecast for next 3 days
 3. Can search with city name around the globe
 4. Current location weather is provided by clicking the compass icon in the menu bar
+5. This app shows only current location weather in landscape mode. You need to switch to portrait mode to see weather forecast and search for weather in other cities
 
