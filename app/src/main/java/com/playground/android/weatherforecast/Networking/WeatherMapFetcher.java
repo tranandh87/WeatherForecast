@@ -44,36 +44,23 @@ public class WeatherMapFetcher {
 
     //Current Weather Methods
 
-    public CurrentWeatherReport fetchCurrentWeatherReport(Location location){
-        String url = WeatherMapQuery.getCurrentWeatherAPI(location);
-        JSONObject jsonBody = getJsonBody(url);
+    public CurrentWeatherReport fetchCurrentWeatherReport(Location location, String query){
+        String url;
+        if(location != null){
+            url = WeatherMapQuery.getCurrentWeatherAPI(location);
+        } else if(query != null){
+            url = WeatherMapQuery.getCurrentWeatherAPI(query);
+        } else{
+            return null;
+        }
 
+        JSONObject jsonBody = getJsonBody(url);
 
         try {
             if (jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
                 return parseCurrentWeather(jsonBody);
             }
             else{
-                logErrorMessage(jsonBody);
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public CurrentWeatherReport fetchCurrentWeatherReport(String query){
-        String url = WeatherMapQuery.getCurrentWeatherAPI(query);
-        JSONObject jsonBody = getJsonBody(url);
-
-        try {
-            if (jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
-                return parseCurrentWeather(jsonBody);
-            }
-            else {
                 logErrorMessage(jsonBody);
                 return null;
             }
@@ -116,28 +103,16 @@ public class WeatherMapFetcher {
     }
 
     //Weather forecast methods
-    public List<WeatherForecastReport> fetchWeatherForecastReport(Location location){
-        String url = WeatherMapQuery.getWeatherForecastAPI(location);
-        JSONObject jsonBody = getJsonBody(url);
+    public List<WeatherForecastReport> fetchWeatherForecastReport(Location location, String query){
 
-        try {
-            if (jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
-                return parseWeatherForecast(jsonBody);
-            }
-            else{
-                logErrorMessage(jsonBody);
-                return null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        String url;
+        if(location != null){
+            url = WeatherMapQuery.getWeatherForecastAPI(location);
+        } else if(query != null){
+            url = WeatherMapQuery.getWeatherForecastAPI(query);
+        } else{
+            return null;
         }
-        return null;
-    }
-
-    public List<WeatherForecastReport> fetchWeatherForecastReport(String query){
-        String url = WeatherMapQuery.getWeatherForecastAPI(query);
         JSONObject jsonBody = getJsonBody(url);
 
         try {

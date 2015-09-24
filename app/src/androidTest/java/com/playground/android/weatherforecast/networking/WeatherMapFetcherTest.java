@@ -28,7 +28,7 @@ public class WeatherMapFetcherTest extends TestCase {
     }
 
     public void testFetchCurrentWeatherReport() throws Exception {
-        CurrentWeatherReport currentWeatherReport = mWeatherMapFetcher.fetchCurrentWeatherReport("portland");
+        CurrentWeatherReport currentWeatherReport = mWeatherMapFetcher.fetchCurrentWeatherReport(null,"portland");
         Assert.assertNotNull(currentWeatherReport);
         Assert.assertNotNull(currentWeatherReport.getWeaterIcon());
         Assert.assertNotNull(currentWeatherReport.getTemperature());
@@ -42,7 +42,7 @@ public class WeatherMapFetcherTest extends TestCase {
 
     public void testFetchCurrentWeatherReport1() throws Exception {
 
-        CurrentWeatherReport currentWeatherReport = mWeatherMapFetcher.fetchCurrentWeatherReport(mockLocation);
+        CurrentWeatherReport currentWeatherReport = mWeatherMapFetcher.fetchCurrentWeatherReport(mockLocation,null);
         Assert.assertNotNull(currentWeatherReport);
         Assert.assertNotNull(currentWeatherReport.getWeaterIcon());
         Assert.assertNotNull(currentWeatherReport.getTemperature());
@@ -55,7 +55,7 @@ public class WeatherMapFetcherTest extends TestCase {
     }
 
     public void testFetchWeatherForecastReport() throws Exception {
-        List<WeatherForecastReport> weatherForecastReport= mWeatherMapFetcher.fetchWeatherForecastReport("chennai");
+        List<WeatherForecastReport> weatherForecastReport= mWeatherMapFetcher.fetchWeatherForecastReport(null,"chennai");
 
         Assert.assertNotNull(weatherForecastReport);
         for (WeatherForecastReport report : weatherForecastReport){
@@ -66,7 +66,7 @@ public class WeatherMapFetcherTest extends TestCase {
     }
 
     public void testFetchWeatherForecastReport1() throws Exception {
-        List<WeatherForecastReport> weatherForecastReport= mWeatherMapFetcher.fetchWeatherForecastReport(mockLocation);
+        List<WeatherForecastReport> weatherForecastReport= mWeatherMapFetcher.fetchWeatherForecastReport(mockLocation,null);
 
         Assert.assertNotNull(weatherForecastReport);
         for (WeatherForecastReport report : weatherForecastReport){

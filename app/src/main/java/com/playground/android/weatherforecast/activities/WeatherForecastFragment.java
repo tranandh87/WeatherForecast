@@ -488,9 +488,9 @@ public class WeatherForecastFragment extends Fragment {
         public CurrentWeatherReport loadInBackground() {
             Log.i(TAG, "Loader: starting loader background thread");
             if (mQuery != null && !mQuery.isEmpty()) {
-                return new WeatherMapFetcher().fetchCurrentWeatherReport(mQuery);
+                return new WeatherMapFetcher().fetchCurrentWeatherReport(null,mQuery);
             } else {
-                return new WeatherMapFetcher().fetchCurrentWeatherReport(mLocation);
+                return new WeatherMapFetcher().fetchCurrentWeatherReport(mLocation,null);
             }
         }
 
@@ -577,9 +577,9 @@ public class WeatherForecastFragment extends Fragment {
         public List<WeatherForecastReport> loadInBackground() {
             Log.i(TAG, "Loader: starting loader background thread");
             if (mQuery != null && !mQuery.isEmpty()) {
-                return new WeatherMapFetcher().fetchWeatherForecastReport(mQuery);
+                return new WeatherMapFetcher().fetchWeatherForecastReport(null,mQuery);
             } else {
-                return new WeatherMapFetcher().fetchWeatherForecastReport(mLocation);
+                return new WeatherMapFetcher().fetchWeatherForecastReport(mLocation,null);
             }
         }
 
