@@ -35,12 +35,28 @@
 
 <p><strong>Supports API 16 and above</strong></p>
 
+<p><strong>Run and build instruction:</strong>
+Use Gradle to build the project. Android studio build in Gradle support could be handy.</p>
+
+<p><strong>Diving into implementation:</strong></p>
+
+<ul>
+<li>I have used two <code>AsyncTaskLoader</code> (one for current weather and other for weather forecast) in-order to avoid network call on configuration changes.</li>
+<li>I have used <code>RecyclerView, Adapter and ViewHolder</code> for showing weather forecast result. Current we have only shown 3 days weather forecast but using RecylerView, Adapter and ViewHolder makes this app scalable with less code changes.</li>
+<li>Implemented both local and instrumentation Unit test by extending <code>TestCase</code> and <code>ActivityInstrumentationTestCase2</code> respectively.</li>
+</ul>
+
 <h3>
 <a id="requirement-to-run-this-app" class="anchor" href="#requirement-to-run-this-app" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Requirement to run this app:</strong>
 </h3>
 
-<p>This app uses "Fused Location Service", a location service in Google Play services to detect the your current location. This means that <strong>only devices with the Play Store app installed</strong> and up to date will be able to use this application.
+<p>This app uses "Fused Location Service", a location service in Google Play services to detect your current location. This means that <strong>only devices with the Play Store app installed</strong> and up to date will be able to use this application.
 You can also run on emulator with play services, locations and mock location data enabled. You can find how to enabled Google Play Services and location data at the end of this page.</p>
+
+<p>So, following are required to run this app in your device.
+1. Phone with Play Store App installed
+2. Phone with GPS enabled
+3. Phone with Internet service enabled</p>
 
 <h3>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Features:</strong>
