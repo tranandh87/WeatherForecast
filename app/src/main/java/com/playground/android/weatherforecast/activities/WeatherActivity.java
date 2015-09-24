@@ -6,16 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.playground.android.weatherforecast.R;
 
 
 public class WeatherActivity extends SingleFragmentActivity {
@@ -47,6 +42,7 @@ public class WeatherActivity extends SingleFragmentActivity {
                                     finish(); }
                             });
             errorDialog.show();
+            System.exit(0);
         }
         else
             Log.i(TAG, "Google Play service is available");
@@ -72,6 +68,7 @@ public class WeatherActivity extends SingleFragmentActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        System.exit(0);
                     }
                 });
         final AlertDialog alert = builder.create();
