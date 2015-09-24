@@ -52,7 +52,7 @@ public class WeatherForecastFragment extends Fragment {
     private TextView mWindView;
 
     private GoogleApiClient mClient;
-    private static Location mLocation = null;
+    private Location mLocation = null;
 
     private CurrentWeatherReport mCurrentWeatherReport;
     private List<WeatherForecastReport> mWeatherForecastReports;
@@ -105,16 +105,19 @@ public class WeatherForecastFragment extends Fragment {
                     public void onConnected(Bundle bundle) {
                         getActivity().invalidateOptionsMenu();
 
-                        if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
-                                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
-                            Log.i(TAG, "Saved Instance - Search Query From OnCreate : " + mSavedInstanceState.getString(KEY_SEARCH_QUERY));
-                            findWeatherForSearchQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY),false);
-                        } else if (mSearchView != null && !mSearchView.getQuery().toString().isEmpty()) {
-                            Log.i(TAG, "Search Query From OnCreate : " + mSearchView.getQuery().toString());
-                            findWeatherForSearchQuery(mSearchView.getQuery().toString(),false);
+                        if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER) != null) {
+                            Log.i(TAG, "Loader is not null");
+                            if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER).isStarted()) {
+                                Log.i(TAG, "Loader is not null and already running so just initialized it");
+                                initLoaders();
+                            }
+                        } else if ((mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
+                                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty())) {
+                            Log.i(TAG, "Search for Search query in OnCreate");
+                            findWeatherForSearchQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY));
                         } else {
                             Log.i(TAG, "Search for current location in OnCreate");
-                            findWeatherForCurrentLocation(false);
+                            findWeatherForCurrentLocation();
                         }
                     }
 
@@ -157,7 +160,6 @@ public class WeatherForecastFragment extends Fragment {
         currentWeatherProgressBar = (ProgressBar) v.findViewById(R.id.current_weather_progressBar);
 
         return v;
-
     }
 
     @Override
@@ -172,7 +174,6 @@ public class WeatherForecastFragment extends Fragment {
                 savedInstanceState.putString(KEY_SEARCH_QUERY, mSearchView.getQuery().toString());
             }
         }
-
     }
 
     private void setupAdapter() {
@@ -222,7 +223,7 @@ public class WeatherForecastFragment extends Fragment {
 
         if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
                 && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
-            mSearchView.setQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY),false);
+            mSearchView.setQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY), false);
         }
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -231,7 +232,7 @@ public class WeatherForecastFragment extends Fragment {
                 weatherForecastProgressBar.setVisibility(View.VISIBLE);
                 mSearchView.clearFocus();
                 Log.d(TAG, "QueryTextSubmit: " + s);
-                findWeatherForSearchQuery(s,true);
+                findWeatherForSearchQuery(s);
                 return true;
             }
 
@@ -250,47 +251,34 @@ public class WeatherForecastFragment extends Fragment {
                 currentWeatherProgressBar.setVisibility(View.VISIBLE);
                 weatherForecastProgressBar.setVisibility(View.VISIBLE);
                 mSearchView.clearFocus();
-                mSearchView.setQuery("",false);
+                mSearchView.setQuery("", false);
                 Log.i(TAG, "find current location weather from Options Item Selected");
-                findWeatherForCurrentLocation(true);
+                findWeatherForCurrentLocation();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void findWeatherForCurrentLocation(final boolean isRestartLoaderRequired) {
-        if (mLocation == null) {
-            Log.i(TAG, "Checking for null location value in on Create() is NULL");
-            Log.i(TAG, " Google find Current Location is called");
-            LocationRequest request = LocationRequest.create();
-            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-            request.setNumUpdates(1);
-            request.setInterval(0);
+    private void findWeatherForCurrentLocation() {
+        Log.i(TAG, "Checking for null location value in on Create() is NULL");
+        Log.i(TAG, " Google find Current Location is called");
+        LocationRequest request = LocationRequest.create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setNumUpdates(1);
+        request.setInterval(0);
 
-            LocationServices.FusedLocationApi
-                    .requestLocationUpdates(mClient, request, new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            Log.i(TAG, "LOCATION CHANGED: New location : " + location.toString());
-                            Log.i(TAG, "Got a fix: " + location);
-                            mLocation = location;
-                            if (isRestartLoaderRequired){
-                                restartLoaders(null);
-                            }
-                            else{
-                                initLoaders(null);
-                            }
-                        }
-                    });
-        }else {
-            if (isRestartLoaderRequired){
-                restartLoaders(null);
-            }
-            else{
-                initLoaders(null);
-            }
-        }
+        LocationServices.FusedLocationApi
+                .requestLocationUpdates(mClient, request, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        Log.i(TAG, "LOCATION CHANGED: New location : " + location.toString());
+                        Log.i(TAG, "Got a fix: " + location);
+                        mLocation = location;
+                        restartLoaders(null);
+                    }
+                });
+
     }
 
     private void restartLoaders(String query) {
@@ -300,44 +288,36 @@ public class WeatherForecastFragment extends Fragment {
         }
     }
 
-    private void initLoaders(String query) {
-        getLoaderManager().initLoader(CURRENT_WEATHER_LOADER, null, new CurrentWeatherReportLoaderListener(query));
+    private void initLoaders() {
+        getLoaderManager().initLoader(CURRENT_WEATHER_LOADER, null, new CurrentWeatherReportLoaderListener(null));
         if (!mIsLandScape) {
-            getLoaderManager().initLoader(WEATHER_FORECAST_LOADER, null, new WeatherForecastReportLoaderListener(query));
+            getLoaderManager().initLoader(WEATHER_FORECAST_LOADER, null, new WeatherForecastReportLoaderListener(null));
         }
     }
 
-    private void findWeatherForSearchQuery(String query,boolean isRestartLoaderRequired) {
-        mLocation = null;
-        if (isRestartLoaderRequired){
-            restartLoaders(query);
-        }
-        else{
-            initLoaders(query);
-        }
+    private void findWeatherForSearchQuery(String query) {
+        restartLoaders(query);
     }
 
     //Class for Implementing Current Weather report loader (currentWeatherTaskLoader) call back methods
     private class CurrentWeatherReportLoaderListener implements LoaderManager.LoaderCallbacks<CurrentWeatherReport> {
         String mQuery = null;
 
-        public CurrentWeatherReportLoaderListener(String query){
+        public CurrentWeatherReportLoaderListener(String query) {
             mQuery = query;
         }
 
         @Override
         public Loader<CurrentWeatherReport> onCreateLoader(int id, Bundle args) {
-            // This is called when a new Loader needs to be created.  This
-            // sample only has one Loader with no arguments, so it is simple.
-            Log.i(TAG, "Loader: On Create Loader");
+            // This is called when a new Loader needs to be created.
+            Log.i(TAG, "CurrentWeatherReportLoaderListener: On Create Loader");
             return new currentWeatherTaskLoader(getActivity(), mLocation, mQuery);
-
         }
 
         @Override
         public void onLoadFinished(Loader<CurrentWeatherReport> loader, CurrentWeatherReport currentWeatherReport) {
             // Set the new data in the adapter.
-            Log.i(TAG, "Loader: On Loader Finished");
+            Log.i(TAG, "CurrentWeatherReportLoaderListener: On Loader Finished");
             if (currentWeatherReport != null) {
                 currentWeatherProgressBar.setVisibility(View.GONE);
                 mCurrentWeatherReport = currentWeatherReport;
@@ -345,7 +325,6 @@ public class WeatherForecastFragment extends Fragment {
             } else {
                 showErrrorMessageDialog();
             }
-
         }
 
         @Override
@@ -354,21 +333,20 @@ public class WeatherForecastFragment extends Fragment {
             Log.i(TAG, "Loader: On Loader Reset");
 
         }
-
     }
 
     //Class for Implementing Weather forecast report loader (WeatherForecastTaskLoader) call back methods
     private class WeatherForecastReportLoaderListener implements LoaderManager.LoaderCallbacks<List<WeatherForecastReport>> {
         String mQuery = null;
 
-        public WeatherForecastReportLoaderListener(String query){
+        public WeatherForecastReportLoaderListener(String query) {
             mQuery = query;
         }
+
         @Override
         public Loader<List<WeatherForecastReport>> onCreateLoader(int id, Bundle args) {
-            // This is called when a new Loader needs to be created.  This
-            // sample only has one Loader with no arguments, so it is simple.
-            Log.i(TAG, "Loader: On Create Loader");
+            // This is called when a new Loader needs to be created.
+            Log.i(TAG, "WeatherForecastReportLoaderListener: On Create Loader");
             return new WeatherForecastTaskLoader(getActivity(), mLocation, mQuery);
 
         }
@@ -376,7 +354,7 @@ public class WeatherForecastFragment extends Fragment {
         @Override
         public void onLoadFinished(Loader<List<WeatherForecastReport>> loader, List<WeatherForecastReport> weatherForecastReports) {
             // Set the new data in the adapter.
-            Log.i(TAG, "Loader: On Loader Finished");
+            Log.i(TAG, "WeatherForecastReportLoaderListener: On Loader Finished");
             if (weatherForecastReports != null) {
                 weatherForecastProgressBar.setVisibility(View.GONE);
                 mWeatherForecastReports = weatherForecastReports;
@@ -384,7 +362,6 @@ public class WeatherForecastFragment extends Fragment {
             } else {
                 showErrrorMessageDialog();
             }
-
         }
 
         @Override
@@ -396,14 +373,12 @@ public class WeatherForecastFragment extends Fragment {
 
     }
 
-    //Weather forecast view holder and adapter
+    //Weather forecast view holder
 
     private class WeatherForecastHolder extends RecyclerView.ViewHolder {
         private TextView mDateTextView;
         private TextView mTempView;
         private ImageView mWeatherForecastIcon;
-
-        private WeatherForecastReport mWeatherForecastReport;
 
         public WeatherForecastHolder(View itemView) {
             super(itemView);
@@ -416,10 +391,12 @@ public class WeatherForecastFragment extends Fragment {
         public void bindWeatherForecastReport(WeatherForecastReport weatherForecastReport) {
             mDateTextView.setText(weatherForecastReport.getDate());
             mTempView.setText(weatherForecastReport.getTemperature() + " \u2109");
-            mWeatherForecastIcon.setImageDrawable(new BitmapDrawable(getResources(), mCurrentWeatherReport.getWeaterIcon()));
+            mWeatherForecastIcon.setImageDrawable(new BitmapDrawable(getResources(), weatherForecastReport.getWeaterIcon()));
         }
     }
 
+
+    //Weather forecast Adapater
     private class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecastHolder> {
         private List<WeatherForecastReport> mWeatherForecastReports;
 
@@ -462,7 +439,7 @@ public class WeatherForecastFragment extends Fragment {
                             Log.i(TAG, "Checking for null location value in on showErrrorMessageDialog() is NULL");
                         } else
                             Log.i(TAG, "Checking for null location value in on showErrrorMessageDialog() is NOT NULL");
-                        findWeatherForCurrentLocation(true);
+                        findWeatherForCurrentLocation();
                     }
                 });
         AlertDialog alert = builder.create();
@@ -481,22 +458,34 @@ public class WeatherForecastFragment extends Fragment {
             mLocation = location;
             mQuery = query;
 
-            Log.i(TAG, "Loader: On Loader Constructor");
+            Log.i(TAG, "currentWeatherTaskLoader: On Loader Constructor");
         }
 
         @Override
         public CurrentWeatherReport loadInBackground() {
-            Log.i(TAG, "Loader: starting loader background thread");
+            Log.i(TAG, "currentWeatherTaskLoader: starting loader background thread");
             if (mQuery != null && !mQuery.isEmpty()) {
-                return new WeatherMapFetcher().fetchCurrentWeatherReport(null,mQuery);
+                return new WeatherMapFetcher().fetchCurrentWeatherReport(null, mQuery);
             } else {
-                return new WeatherMapFetcher().fetchCurrentWeatherReport(mLocation,null);
+                return new WeatherMapFetcher().fetchCurrentWeatherReport(mLocation, null);
+            }
+        }
+
+        @Override
+        protected void onStartLoading() {
+            Log.i(TAG, "currentWeatherTaskLoader: On start Loading");
+            if (mCurrentWeatherReport != null) {
+                deliverResult(mCurrentWeatherReport);
+            }
+
+            if (takeContentChanged() || mCurrentWeatherReport == null) {
+                forceLoad();
             }
         }
 
         @Override
         public void deliverResult(CurrentWeatherReport currentWeatherReport) {
-            Log.i(TAG, "Loader: On Loader delivering result");
+            Log.i(TAG, "currentWeatherTaskLoader: On Loader delivering result");
             if (isReset()) {
                 if (currentWeatherReport != null) {
                     onReleaseResources(currentWeatherReport);
@@ -515,26 +504,14 @@ public class WeatherForecastFragment extends Fragment {
         }
 
         @Override
-        protected void onStartLoading() {
-            Log.i(TAG, "Loader: On start Loading");
-            if (mCurrentWeatherReport != null) {
-                deliverResult(mCurrentWeatherReport);
-            }
-
-            if (takeContentChanged() || mCurrentWeatherReport == null) {
-                forceLoad();
-            }
-        }
-
-        @Override
         protected void onStopLoading() {
-            Log.i(TAG, "Loader: On stop Loading");
+            Log.i(TAG, "currentWeatherTaskLoader: On stop Loading");
             cancelLoad();
         }
 
         @Override
         public void onCanceled(CurrentWeatherReport currentWeatherReport) {
-            Log.i(TAG, "Loader: On Loader Cancelled");
+            Log.i(TAG, "currentWeatherTaskLoader: On Loader Cancelled");
             super.onCanceled(currentWeatherReport);
 
             onReleaseResources(currentWeatherReport);
@@ -542,7 +519,7 @@ public class WeatherForecastFragment extends Fragment {
 
         @Override
         protected void onReset() {
-            Log.i(TAG, "Loader: On Loader Reset");
+            Log.i(TAG, "currentWeatherTaskLoader: On Loader Reset");
             super.onReset();
 
             onStopLoading();
@@ -570,22 +547,34 @@ public class WeatherForecastFragment extends Fragment {
             mLocation = location;
             mQuery = query;
 
-            Log.i(TAG, "Loader: On Loader Constructor");
+            Log.i(TAG, "WeatherForecastTaskLoader: On Loader Constructor");
         }
 
         @Override
         public List<WeatherForecastReport> loadInBackground() {
-            Log.i(TAG, "Loader: starting loader background thread");
+            Log.i(TAG, "WeatherForecastTaskLoader: starting loader background thread");
             if (mQuery != null && !mQuery.isEmpty()) {
-                return new WeatherMapFetcher().fetchWeatherForecastReport(null,mQuery);
+                return new WeatherMapFetcher().fetchWeatherForecastReport(null, mQuery);
             } else {
-                return new WeatherMapFetcher().fetchWeatherForecastReport(mLocation,null);
+                return new WeatherMapFetcher().fetchWeatherForecastReport(mLocation, null);
+            }
+        }
+
+        @Override
+        protected void onStartLoading() {
+            Log.i(TAG, "WeatherForecastTaskLoader: On start Loading");
+            if (mWeatherForecastReportList != null) {
+                deliverResult(mWeatherForecastReportList);
+            }
+
+            if (takeContentChanged() || mWeatherForecastReportList == null) {
+                forceLoad();
             }
         }
 
         @Override
         public void deliverResult(List<WeatherForecastReport> weatherForecastReportList) {
-            Log.i(TAG, "Loader: On Loader delivering result");
+            Log.i(TAG, "WeatherForecastTaskLoader: On Loader delivering result");
             if (isReset()) {
                 if (weatherForecastReportList != null) {
                     onReleaseResources(weatherForecastReportList);
@@ -604,26 +593,14 @@ public class WeatherForecastFragment extends Fragment {
         }
 
         @Override
-        protected void onStartLoading() {
-            Log.i(TAG, "Loader: On start Loading");
-            if (mWeatherForecastReportList != null) {
-                deliverResult(mWeatherForecastReportList);
-            }
-
-            if (takeContentChanged() || mWeatherForecastReportList == null) {
-                forceLoad();
-            }
-        }
-
-        @Override
         protected void onStopLoading() {
-            Log.i(TAG, "Loader: On stop Loading");
+            Log.i(TAG, "WeatherForecastTaskLoader: On stop Loading");
             cancelLoad();
         }
 
         @Override
         public void onCanceled(List<WeatherForecastReport> weatherForecastReports) {
-            Log.i(TAG, "Loader: On Loader Cancelled");
+            Log.i(TAG, "WeatherForecastTaskLoader: On Loader Cancelled");
             super.onCanceled(weatherForecastReports);
 
             onReleaseResources(weatherForecastReports);
@@ -631,7 +608,7 @@ public class WeatherForecastFragment extends Fragment {
 
         @Override
         protected void onReset() {
-            Log.i(TAG, "Loader: On Loader Reset");
+            Log.i(TAG, "WeatherForecastTaskLoader: On Loader Reset");
             super.onReset();
 
             onStopLoading();
@@ -643,7 +620,7 @@ public class WeatherForecastFragment extends Fragment {
         }
 
         protected void onReleaseResources(List<WeatherForecastReport> weatherForecastReports) {
-            Log.i(TAG, "Loader: On Loader Released");
+            Log.i(TAG, "WeatherForecastTaskLoader: On Loader Released");
         }
     }
 
