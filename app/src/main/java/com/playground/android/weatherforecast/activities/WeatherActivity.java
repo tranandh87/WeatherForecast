@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.playground.android.weatherforecast.R;
 
 
 public class WeatherActivity extends SingleFragmentActivity {
@@ -31,21 +32,24 @@ public class WeatherActivity extends SingleFragmentActivity {
     }
 
     private void checkIfGooglePlayServicesAvailable() {
-        int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (errorCode != ConnectionResult.SUCCESS) {
-            Dialog errorDialog = GooglePlayServicesUtil
-                    .getErrorDialog(errorCode, this, REQUEST_ERROR,
-                            new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    // Leave if services are unavailable.
-                                    finish(); }
-                            });
-            errorDialog.show();
-            System.exit(0);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.goole_play_service_error_message)
+                    .setTitle("Google Play Service Error")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Log.i(TAG, "Google Play service is unavailable. Quitting app. Error Code: " + errorCode);
+                            System.exit(0);
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
         }
-        else
+        else {
             Log.i(TAG, "Google Play service is available");
+        }
     }
 
     private void checkIfGPSEnabled(){
@@ -58,7 +62,8 @@ public class WeatherActivity extends SingleFragmentActivity {
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage(R.string.gps_enable_option_message)
+                .setTitle("GPS is Disabled")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {

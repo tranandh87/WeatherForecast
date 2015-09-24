@@ -561,7 +561,7 @@ public class WeatherForecastFragment extends Fragment {
     //Async Loader for getting weather forecast report task loader
     private static class WeatherForecastTaskLoader extends AsyncTaskLoader<List<WeatherForecastReport>> {
 
-        List<WeatherForecastReport> mCurrentWeatherReport;
+        List<WeatherForecastReport> mWeatherForecastReportList;
         Location mLocation;
         String mQuery;
 
@@ -591,8 +591,8 @@ public class WeatherForecastFragment extends Fragment {
                     onReleaseResources(weatherForecastReportList);
                 }
             }
-            List<WeatherForecastReport> weatherForecastReports = mCurrentWeatherReport;
-            mCurrentWeatherReport = weatherForecastReportList;
+            List<WeatherForecastReport> weatherForecastReports = mWeatherForecastReportList;
+            mWeatherForecastReportList = weatherForecastReportList;
 
             if (isStarted()) {
                 super.deliverResult(weatherForecastReportList);
@@ -606,11 +606,11 @@ public class WeatherForecastFragment extends Fragment {
         @Override
         protected void onStartLoading() {
             Log.i(TAG, "Loader: On start Loading");
-            if (mCurrentWeatherReport != null) {
-                deliverResult(mCurrentWeatherReport);
+            if (mWeatherForecastReportList != null) {
+                deliverResult(mWeatherForecastReportList);
             }
 
-            if (takeContentChanged() || mCurrentWeatherReport == null) {
+            if (takeContentChanged() || mWeatherForecastReportList == null) {
                 forceLoad();
             }
         }
@@ -636,9 +636,9 @@ public class WeatherForecastFragment extends Fragment {
 
             onStopLoading();
 
-            if (mCurrentWeatherReport != null) {
-                onReleaseResources(mCurrentWeatherReport);
-                mCurrentWeatherReport = null;
+            if (mWeatherForecastReportList != null) {
+                onReleaseResources(mWeatherForecastReportList);
+                mWeatherForecastReportList = null;
             }
         }
 
