@@ -4,10 +4,13 @@ import android.location.Location;
 
 import com.playground.android.weatherforecast.bean.CurrentWeatherReport;
 import com.playground.android.weatherforecast.bean.WeatherForecastReport;
+import com.playground.android.weatherforecast.util.Util;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class WeatherMapFetcherTest extends TestCase {
@@ -90,5 +93,9 @@ public class WeatherMapFetcherTest extends TestCase {
 
     public void testGetUrlString() throws Exception {
 
+    }
+
+    public void testUtilCurrentDateAndTime() throws Exception{
+        Assert.assertEquals(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()),Util.getCurrentDateTime());
     }
 }
