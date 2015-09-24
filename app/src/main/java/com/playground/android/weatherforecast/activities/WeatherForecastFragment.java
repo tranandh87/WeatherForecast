@@ -259,7 +259,7 @@ public class WeatherForecastFragment extends Fragment {
         }
     }
 
-    private void findWeatherForCurrentLocation(final boolean isRetartLoaderRequired) {
+    private void findWeatherForCurrentLocation(final boolean isRestartLoaderRequired) {
         if (mLocation == null) {
             Log.i(TAG, "Checking for null location value in on Create() is NULL");
             Log.i(TAG, " Google find Current Location is called");
@@ -275,7 +275,7 @@ public class WeatherForecastFragment extends Fragment {
                             Log.i(TAG, "LOCATION CHANGED: New location : " + location.toString());
                             Log.i(TAG, "Got a fix: " + location);
                             mLocation = location;
-                            if (isRetartLoaderRequired){
+                            if (isRestartLoaderRequired){
                                 restartLoaders(null);
                             }
                             else{
@@ -284,7 +284,7 @@ public class WeatherForecastFragment extends Fragment {
                         }
                     });
         }else {
-            if (isRetartLoaderRequired){
+            if (isRestartLoaderRequired){
                 restartLoaders(null);
             }
             else{
@@ -307,9 +307,9 @@ public class WeatherForecastFragment extends Fragment {
         }
     }
 
-    private void findWeatherForSearchQuery(String query,boolean isRetartLoaderRequired) {
+    private void findWeatherForSearchQuery(String query,boolean isRestartLoaderRequired) {
         mLocation = null;
-        if (isRetartLoaderRequired){
+        if (isRestartLoaderRequired){
             restartLoaders(query);
         }
         else{

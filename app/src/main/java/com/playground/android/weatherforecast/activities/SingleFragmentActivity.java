@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.playground.android.weatherforecast.R;
 
 /**
- * Created by anarajendran on 9/19`/15.
+ * Created by anarajendran on 9/19/15.
  */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
