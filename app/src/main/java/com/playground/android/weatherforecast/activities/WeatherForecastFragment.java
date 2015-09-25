@@ -105,10 +105,10 @@ public class WeatherForecastFragment extends Fragment {
                     public void onConnected(Bundle bundle) {
                         getActivity().invalidateOptionsMenu();
 
-                        if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER) != null) {
+                        if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER) != null && getLoaderManager().getLoader(WEATHER_FORECAST_LOADER) != null) {
                             Log.i(TAG, "Loader is not null");
                             if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER).isStarted()) {
-                                Log.i(TAG, "Loader is not null and already running so just initialized it");
+                                Log.i(TAG, "Loader is not null and already running so just initializing it");
                                 initLoaders();
                             }
                         } else if ((mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
@@ -248,6 +248,7 @@ public class WeatherForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_locate:
+                mSavedInstanceState = null;
                 currentWeatherProgressBar.setVisibility(View.VISIBLE);
                 weatherForecastProgressBar.setVisibility(View.VISIBLE);
                 mSearchView.clearFocus();
@@ -330,7 +331,7 @@ public class WeatherForecastFragment extends Fragment {
         @Override
         public void onLoaderReset(Loader<CurrentWeatherReport> loader) {
             // Clear the data in the adapter.
-            Log.i(TAG, "Loader: On Loader Reset");
+            Log.i(TAG, "CurrentWeatherReportLoaderListener: On Loader Reset");
 
         }
     }
@@ -367,7 +368,7 @@ public class WeatherForecastFragment extends Fragment {
         @Override
         public void onLoaderReset(Loader<List<WeatherForecastReport>> loader) {
             // Clear the data in the adapter.
-            Log.i(TAG, "Loader: On Loader Reset");
+            Log.i(TAG, "WeatherForecastReportLoaderListener: On Loader Reset");
 
         }
 
@@ -531,7 +532,7 @@ public class WeatherForecastFragment extends Fragment {
         }
 
         protected void onReleaseResources(CurrentWeatherReport currentWeatherReport) {
-            Log.i(TAG, "Loader: On Loader Released");
+            Log.i(TAG, "currentWeatherTaskLoader: On Loader Released");
         }
     }
 

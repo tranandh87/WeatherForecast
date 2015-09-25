@@ -57,7 +57,7 @@ public class WeatherMapFetcher {
         JSONObject jsonBody = getJsonBody(url);
 
         try {
-            if (jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
+            if (jsonBody != null && jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
                 return parseCurrentWeather(jsonBody);
             }
             else{
@@ -116,7 +116,7 @@ public class WeatherMapFetcher {
         JSONObject jsonBody = getJsonBody(url);
 
         try {
-            if (jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
+            if (jsonBody != null && jsonBody.getInt(WEATHER_RESPONSE_CODE) == 200) {
                 return parseWeatherForecast(jsonBody);
             }
             else{
