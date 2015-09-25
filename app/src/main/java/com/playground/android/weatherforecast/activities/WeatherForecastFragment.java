@@ -322,7 +322,7 @@ public class WeatherForecastFragment extends Fragment {
                 mCurrentWeatherReport = currentWeatherReport;
                 updateUIWithWeatherReport();
             } else {
-                showErrrorMessageDialog();
+                showErrorMessageDialog();
             }
         }
 
@@ -359,7 +359,7 @@ public class WeatherForecastFragment extends Fragment {
                 mWeatherForecastReports = weatherForecastReports;
                 setupAdapter();
             } else {
-                showErrrorMessageDialog();
+                showErrorMessageDialog();
             }
         }
 
@@ -424,7 +424,7 @@ public class WeatherForecastFragment extends Fragment {
         }
     }
 
-    private void showErrrorMessageDialog() {
+    private void showErrorMessageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.api_error_message)
                 .setTitle("Error in api query!!!")
@@ -434,9 +434,9 @@ public class WeatherForecastFragment extends Fragment {
                         Log.i(TAG, "Error message dialog is captured");
 
                         if (mLocation == null) {
-                            Log.i(TAG, "Checking for null location value in on showErrrorMessageDialog() is NULL");
+                            Log.i(TAG, "Checking for null location value in on showErrorMessageDialog() is NULL");
                         } else
-                            Log.i(TAG, "Checking for null location value in on showErrrorMessageDialog() is NOT NULL");
+                            Log.i(TAG, "Checking for null location value in on showErrorMessageDialog() is NOT NULL");
                         findWeatherForCurrentLocation();
                     }
                 });
