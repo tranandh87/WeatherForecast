@@ -65,7 +65,7 @@ public class WeatherForecastFragment extends Fragment {
 
     private static final String KEY_SEARCH_QUERY = "SearchQuery";
 
-    private Bundle mSavedInstanceState;
+    private String mSavedInstanceState;
 
     public boolean created;
     public boolean started;
@@ -95,7 +95,10 @@ public class WeatherForecastFragment extends Fragment {
         }
 
         if (savedInstanceState != null) {
-            mSavedInstanceState = savedInstanceState;
+            String searchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY);
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                mSavedInstanceState = searchQuery;
+            }
         }
 
         mClient = new GoogleApiClient.Builder(getActivity())
@@ -105,16 +108,17 @@ public class WeatherForecastFragment extends Fragment {
                     public void onConnected(Bundle bundle) {
                         getActivity().invalidateOptionsMenu();
 
-                        if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER) != null && getLoaderManager().getLoader(WEATHER_FORECAST_LOADER) != null) {
+                        if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER) != null &&
+                                getLoaderManager().getLoader(WEATHER_FORECAST_LOADER) != null) {
                             Log.i(TAG, "Loader is not null");
-                            if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER).isStarted()) {
+                            if (getLoaderManager().getLoader(CURRENT_WEATHER_LOADER).isStarted() &&
+                                    getLoaderManager().getLoader(WEATHER_FORECAST_LOADER).isStarted() ) {
                                 Log.i(TAG, "Loader is not null and already running so just initializing it");
                                 initLoaders();
                             }
-                        } else if ((mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
-                                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty())) {
+                        } else if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
                             Log.i(TAG, "Search for Search query in OnCreate");
-                            findWeatherForSearchQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY));
+                            findWeatherForSearchQuery(mSavedInstanceState);
                         } else {
                             Log.i(TAG, "Search for current location in OnCreate");
                             findWeatherForCurrentLocation();
@@ -166,12 +170,14 @@ public class WeatherForecastFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
-        if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
-                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
-            savedInstanceState.putString(KEY_SEARCH_QUERY, mSavedInstanceState.getString(KEY_SEARCH_QUERY));
+        if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
+            savedInstanceState.putString(KEY_SEARCH_QUERY, mSavedInstanceState);
         } else {
             if (mSearchView != null) {
-                savedInstanceState.putString(KEY_SEARCH_QUERY, mSearchView.getQuery().toString());
+                String searchQuery = mSearchView.getQuery().toString();
+                if (searchQuery != null && !searchQuery.isEmpty()) {
+                    savedInstanceState.putString(KEY_SEARCH_QUERY, mSearchView.getQuery().toString());
+                }
             }
         }
     }
@@ -221,9 +227,8 @@ public class WeatherForecastFragment extends Fragment {
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setQueryHint(getResources().getString(R.string.search));
 
-        if (mSavedInstanceState != null && mSavedInstanceState.getString(KEY_SEARCH_QUERY) != null
-                && !mSavedInstanceState.getString(KEY_SEARCH_QUERY).isEmpty()) {
-            mSearchView.setQuery(mSavedInstanceState.getString(KEY_SEARCH_QUERY), false);
+        if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
+            mSearchView.setQuery(mSavedInstanceState, false);
         }
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
