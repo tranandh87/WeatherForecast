@@ -41,6 +41,9 @@ import java.util.List;
 public class WeatherForecastFragment extends Fragment {
 
     private static final String TAG = "WeatherForecastLoader";
+    private static final String KEY_SEARCH_QUERY = "SearchQuery";
+    private static final int CURRENT_WEATHER_LOADER = 1;
+    private static final int WEATHER_FORECAST_LOADER = 2;
 
     private TextView mLocationTextView;
     private TextView mDateTimeTextView;
@@ -53,28 +56,19 @@ public class WeatherForecastFragment extends Fragment {
 
     private GoogleApiClient mClient;
     private Location mLocation = null;
-
     private CurrentWeatherReport mCurrentWeatherReport;
     private List<WeatherForecastReport> mWeatherForecastReports;
     private RecyclerView mWeatherForecastRecyclerView;
-
     private ProgressBar weatherForecastProgressBar;
     private ProgressBar currentWeatherProgressBar;
-
     private SearchView mSearchView;
+    private String mSavedSearchQuery;
+    boolean mIsLandScape = false;
 
-    private static final String KEY_SEARCH_QUERY = "SearchQuery";
-
-    private String mSavedInstanceState;
-
+    //variables used for instrumentation unit test
     public boolean created;
     public boolean started;
     public boolean viewCreated;
-
-    boolean mIsLandScape = false;
-
-    private static final int CURRENT_WEATHER_LOADER = 1;
-    private static final int WEATHER_FORECAST_LOADER = 2;
 
     public static WeatherForecastFragment newInstance() {
         return new WeatherForecastFragment();
@@ -97,7 +91,7 @@ public class WeatherForecastFragment extends Fragment {
         if (savedInstanceState != null) {
             String searchQuery = savedInstanceState.getString(KEY_SEARCH_QUERY);
             if (searchQuery != null && !searchQuery.isEmpty()) {
-                mSavedInstanceState = searchQuery;
+                mSavedSearchQuery = searchQuery;
             }
         }
 
@@ -116,9 +110,9 @@ public class WeatherForecastFragment extends Fragment {
                                 Log.i(TAG, "Loader is not null and already running so just initializing it");
                                 initLoaders();
                             }
-                        } else if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
+                        } else if (mSavedSearchQuery != null && !mSavedSearchQuery.isEmpty()) {
                             Log.i(TAG, "Search for Search query in OnCreate");
-                            findWeatherForSearchQuery(mSavedInstanceState);
+                            findWeatherForSearchQuery(mSavedSearchQuery);
                         } else {
                             Log.i(TAG, "Search for current location in OnCreate");
                             findWeatherForCurrentLocation();
@@ -170,8 +164,8 @@ public class WeatherForecastFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
-        if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
-            savedInstanceState.putString(KEY_SEARCH_QUERY, mSavedInstanceState);
+        if (mSavedSearchQuery != null && !mSavedSearchQuery.isEmpty()) {
+            savedInstanceState.putString(KEY_SEARCH_QUERY, mSavedSearchQuery);
         } else {
             if (mSearchView != null) {
                 String searchQuery = mSearchView.getQuery().toString();
@@ -227,8 +221,8 @@ public class WeatherForecastFragment extends Fragment {
         mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setQueryHint(getResources().getString(R.string.search));
 
-        if (mSavedInstanceState != null && !mSavedInstanceState.isEmpty()) {
-            mSearchView.setQuery(mSavedInstanceState, false);
+        if (mSavedSearchQuery != null && !mSavedSearchQuery.isEmpty()) {
+            mSearchView.setQuery(mSavedSearchQuery, false);
         }
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -253,7 +247,7 @@ public class WeatherForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_locate:
-                mSavedInstanceState = null;
+                mSavedSearchQuery = null;
                 currentWeatherProgressBar.setVisibility(View.VISIBLE);
                 weatherForecastProgressBar.setVisibility(View.VISIBLE);
                 mSearchView.clearFocus();
@@ -267,7 +261,6 @@ public class WeatherForecastFragment extends Fragment {
     }
 
     private void findWeatherForCurrentLocation() {
-        Log.i(TAG, "Checking for null location value in on Create() is NULL");
         Log.i(TAG, " Google find Current Location is called");
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -380,7 +373,6 @@ public class WeatherForecastFragment extends Fragment {
     }
 
     //Weather forecast view holder
-
     private class WeatherForecastHolder extends RecyclerView.ViewHolder {
         private TextView mDateTextView;
         private TextView mTempView;
