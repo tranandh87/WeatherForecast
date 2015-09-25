@@ -7,7 +7,7 @@
     <string name="weather_forecast_title">Weather Forecast for 3 days</string>
     <string name="clear_search">Clear Search</string>
     <string name="api_error_message">Possibly error in search query. Please enter correct city name and try again. Will be showing current location weather.</string>
-    <string name="goole_play_service_error_message">Seems like Google Play Store is not installed or Play Service is not available. This app requires this so will quit.</string>
+    <string name="google_play_service_error_message">Seems like Google Play Store is not installed or Play Service is not available. This app requires this so will quit.</string>
     <string name="gps_enable_option_message">Your GPS seems to be disabled, do you want to enable it? This app requires this so will quit if not turned on.</string>
     <string name="current_location">Current Location</string>
 </resources>

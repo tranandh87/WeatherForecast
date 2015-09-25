@@ -84,7 +84,7 @@ public class WeatherMapFetcher {
         WeatherReportWeather weather = getWeatherReportWeather(jsonBody);
         String locationName = jsonBody.getString(WEATHER_REPORT_LOCATION_NAME);
 
-        //feching weather icon
+        //fetching weather icon
         Bitmap bitMap= getWeatherIcon(weather.getIcon());
 
         //Setting values for weather report
@@ -131,7 +131,7 @@ public class WeatherMapFetcher {
         return null;
     }
 
-    public List<WeatherForecastReport> parseWeatherForecast(JSONObject jsonBody)
+    private List<WeatherForecastReport> parseWeatherForecast(JSONObject jsonBody)
             throws IOException, JSONException {
 
         List<WeatherForecastReport> weatherForecastReportList = new ArrayList<>();
@@ -151,11 +151,11 @@ public class WeatherMapFetcher {
                 String date = weatherForecastObject.getString(WEATHER_FORECAST_DATE).split(" ")[0];
                 WeatherReportWeather weather = getWeatherReportWeather(weatherForecastObject);
 
-                //feching weather icon
+                //fetching weather icon
                 Bitmap bitMap = getWeatherIcon(weather.getIcon());
 
                 //Setting values for weather forecast report
-                weatherForecastReport.setWeaterIcon(bitMap);
+                weatherForecastReport.setWeatherIcon(bitMap);
                 weatherForecastReport.setTemperature("Max: " + String.valueOf(main.getTemp()));
                 weatherForecastReport.setDate(date);
                 weatherForecastReportList.add(weatherForecastReport);
@@ -221,7 +221,7 @@ public class WeatherMapFetcher {
     }
 
 
-    public byte[] getUrlBytes(String urlSpec) throws IOException {
+    private byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         try {
@@ -232,7 +232,7 @@ public class WeatherMapFetcher {
                         ": with " +
                         urlSpec);
             }
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = in.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
@@ -246,7 +246,7 @@ public class WeatherMapFetcher {
 
     }
 
-    public String getUrlString(String urlSpec) throws IOException {
+    private String getUrlString(String urlSpec) throws IOException {
         return new String(getUrlBytes(urlSpec));
     }
 

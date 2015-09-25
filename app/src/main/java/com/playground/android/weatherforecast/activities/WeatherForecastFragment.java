@@ -63,7 +63,7 @@ public class WeatherForecastFragment extends Fragment {
     private ProgressBar currentWeatherProgressBar;
     private SearchView mSearchView;
     private String mSavedSearchQuery;
-    boolean mIsLandScape = false;
+    private boolean mIsLandScape = false;
 
     //variables used for instrumentation unit test
     public boolean created;
@@ -389,12 +389,12 @@ public class WeatherForecastFragment extends Fragment {
         public void bindWeatherForecastReport(WeatherForecastReport weatherForecastReport) {
             mDateTextView.setText(weatherForecastReport.getDate());
             mTempView.setText(weatherForecastReport.getTemperature() + " \u2109");
-            mWeatherForecastIcon.setImageDrawable(new BitmapDrawable(getResources(), weatherForecastReport.getWeaterIcon()));
+            mWeatherForecastIcon.setImageDrawable(new BitmapDrawable(getResources(), weatherForecastReport.getWeatherIcon()));
         }
     }
 
 
-    //Weather forecast Adapater
+    //Weather forecast Adapter
     private class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecastHolder> {
         private List<WeatherForecastReport> mWeatherForecastReports;
 

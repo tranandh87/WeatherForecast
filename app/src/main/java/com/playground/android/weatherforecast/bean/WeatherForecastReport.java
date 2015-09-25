@@ -9,7 +9,7 @@ public class WeatherForecastReport {
 
     private String date;
     private String temperature;
-    private Bitmap weaterIcon;
+    private Bitmap weatherIcon;
 
     public String getDate() {
         return date;
@@ -27,11 +27,11 @@ public class WeatherForecastReport {
         this.temperature = temperature;
     }
 
-    public Bitmap getWeaterIcon() {
-        return weaterIcon;
+    public Bitmap getWeatherIcon() {
+        return weatherIcon;
     }
 
-    public void setWeaterIcon(Bitmap weaterIcon) {
-        this.weaterIcon = weaterIcon;
+    public void setWeatherIcon(Bitmap weatherIcon) {
+        this.weatherIcon = weatherIcon;
     }
 }

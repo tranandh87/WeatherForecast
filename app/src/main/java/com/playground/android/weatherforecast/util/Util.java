@@ -1,7 +1,5 @@
 package com.playground.android.weatherforecast.util;
 
-import android.text.format.DateFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

@@ -1,7 +1,6 @@
 package com.playground.android.weatherforecast.bean;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 /**
  * Created by anarajendran on 9/20/15.

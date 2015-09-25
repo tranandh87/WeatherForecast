@@ -1,6 +1,5 @@
 package com.playground.android.weatherforecast.activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,7 +34,7 @@ public class WeatherActivity extends SingleFragmentActivity {
         final int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (errorCode != ConnectionResult.SUCCESS) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.goole_play_service_error_message)
+            builder.setMessage(R.string.google_play_service_error_message)
                     .setTitle("Google Play Service Error")
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {

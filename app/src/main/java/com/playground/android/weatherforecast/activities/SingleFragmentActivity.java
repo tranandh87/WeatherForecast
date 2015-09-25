@@ -13,7 +13,7 @@ import com.playground.android.weatherforecast.R;
  */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
-    public static String PACKAGE_NAME;
+    private static String PACKAGE_NAME;
 
     protected abstract Fragment createFragment();
 

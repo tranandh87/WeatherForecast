@@ -15,8 +15,8 @@ import java.util.List;
 
 public class WeatherMapFetcherTest extends TestCase {
 
-    WeatherMapFetcher mWeatherMapFetcher;
-    Location mockLocation;
+    private WeatherMapFetcher mWeatherMapFetcher;
+    private Location mockLocation;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -64,7 +64,7 @@ public class WeatherMapFetcherTest extends TestCase {
         for (WeatherForecastReport report : weatherForecastReport){
             Assert.assertNotNull(report.getDate());
             Assert.assertNotNull(report.getTemperature());
-            Assert.assertNotNull(report.getWeaterIcon());
+            Assert.assertNotNull(report.getWeatherIcon());
         }
     }
 
@@ -75,7 +75,7 @@ public class WeatherMapFetcherTest extends TestCase {
         for (WeatherForecastReport report : weatherForecastReport){
             Assert.assertNotNull(report.getDate());
             Assert.assertNotNull(report.getTemperature());
-            Assert.assertNotNull(report.getWeaterIcon());
+            Assert.assertNotNull(report.getWeatherIcon());
         }
     }
 
